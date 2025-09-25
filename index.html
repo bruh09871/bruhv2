@@ -1,5 +1,7 @@
+<script>
 let currentVM = null;
 let currentVMId = null;
+let sharedMode = false;
 
 async function launchVM() {
   const res = await fetch("/api/hyperbeam", {
@@ -10,7 +12,7 @@ async function launchVM() {
   const data = await res.json();
   if (data.embed_url) {
     currentVM = data.embed_url;
-    currentVMId = data.vm_id; // save the VM ID
+    currentVMId = data.vm_id;
     document.getElementById("vmGrid").style.display = "none";
     document.getElementById("vmFrameContainer").style.display = "flex";
     document.getElementById("vmFrame").src = currentVM;
@@ -41,3 +43,10 @@ async function resetVM() {
   await destroyVM();
   launchVM();
 }
+
+function toggleMode() {
+  sharedMode = !sharedMode;
+  document.getElementById("modeLabel").innerText = sharedMode ? "Shared" : "Solo";
+}
+</script>
+
