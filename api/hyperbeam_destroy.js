@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     const response = await fetch(`https://engine.hyperbeam.com/v0/vm/${vm_id}`, {
       method: "DELETE",
       headers: {
-        "Authorization": `Bearer sk_test_5ECQZME56sa9OHlk4tGJQyFDrLfKObI-MaER414644w`,
+        "Authorization": `Bearer sk_test_3yMikIFj_7Gm-r9FSjAv0PrAR96DucD7z3vqhn4wsgI`,
         "Content-Type": "application/json"
       }
     });
