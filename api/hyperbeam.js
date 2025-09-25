@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     const response = await fetch("https://engine.hyperbeam.com/v0/vm", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer sk_test_5ECQZME56sa9OHlk4tGJQyFDrLfKObI-MaER414644w`,
+        "Authorization": `Bearer sk_test_zpiEGbL5rmG5vbg8XAExP-RJtMPWxYcMRxijyUUT3Ns`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ start_url: "https://google.com" })
