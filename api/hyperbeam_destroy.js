@@ -1,10 +1,7 @@
 export default async function handler(req, res) {
   try {
     const { vm_id } = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-
-    if (!vm_id) {
-      return res.status(400).json({ error: "No vm_id provided" });
-    }
+    if (!vm_id) return res.status(400).json({ error: "No vm_id provided" });
 
     const response = await fetch(`https://engine.hyperbeam.com/v0/vm/${vm_id}`, {
       method: "DELETE",
