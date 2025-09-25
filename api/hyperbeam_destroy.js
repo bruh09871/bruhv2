@@ -1,3 +1,4 @@
+// Destroy VM
 export default async function handler(req, res) {
   try {
     const { vm_id } = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
@@ -6,13 +7,18 @@ export default async function handler(req, res) {
     const response = await fetch(`https://engine.hyperbeam.com/v0/vm/${vm_id}`, {
       method: "DELETE",
       headers: {
-        "Authorization": `Bearer ${process.env.HYPERBEAM_KEY}`,
+        "Authorization": `Bearer sk_test_5ECQZME56sa9OHlk4tGJQyFDrLfKObI-MaER414644w`,
         "Content-Type": "application/json"
       }
     });
 
-    const data = await response.json();
-    res.status(response.status).json(data);
+    if (response.ok) {
+      res.status(200).json({ success: true });
+    } else {
+      const data = await response.json();
+      res.status(response.status).json(data);
+    }
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
