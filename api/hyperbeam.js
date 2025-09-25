@@ -1,6 +1,14 @@
 export default async function handler(req, res) {
   try {
-    const { shared } = req.body ? await req.json() : { shared: false };
+    // Parse the body safely
+    let shared = false;
+    if (req.body) {
+      if (typeof req.body === "string") {
+        shared = JSON.parse(req.body).shared || false;
+      } else if (typeof req.body === "object") {
+        shared = req.body.shared || false;
+      }
+    }
 
     const response = await fetch("https://engine.hyperbeam.com/v0/vm", {
       method: "POST",
