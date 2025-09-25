@@ -104,7 +104,6 @@
     <div class="btn-row">
       <button onclick="goBack()">⬅ Back</button>
       <button onclick="resetVM()">🔄 Reset</button>
-      <button onclick="toggleMode()">Mode: <span id="modeLabel">Solo</span></button>
     </div>
     <iframe id="vmFrame"></iframe>
   </div>
@@ -112,16 +111,15 @@
   <script>
     let currentVM = null;
     let currentVMId = null;
-    let sharedMode = false;
 
     async function launchVM() {
       const res = await fetch("/api/hyperbeam", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ shared: sharedMode })
+        body: JSON.stringify({})
       });
       const data = await res.json();
-      if (data.embed_url) {
+      if (data.embed_url && data.vm_id) {
         currentVM = data.embed_url;
         currentVMId = data.vm_id;
         document.getElementById('vmGrid').style.display = 'none';
@@ -154,13 +152,6 @@
       await destroyVM();
       launchVM();
     }
-
-    function toggleMode() {
-      sharedMode = !sharedMode;
-      document.getElementById("modeLabel").innerText = sharedMode ? "Shared" : "Solo";
-    }
   </script>
 </body>
 </html>
-
-
