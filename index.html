@@ -1,75 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bruh’s VMs</title>
   <style>
     body {
+      background-color: #0d1117;
+      color: white;
+      font-family: Arial, sans-serif;
       margin: 0;
-      font-family: monospace, sans-serif;
-      background: #0d0d0d;
-      color: #00ffcc;
-      text-align: center;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    h1 {
-      margin: 20px 0;
-      font-size: 2rem;
-    }
-    .toolbar {
-      background: #111;
-      padding: 10px;
+
+    nav {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      border-bottom: 2px solid #00ffcc;
+      align-items: center;
+      padding: 15px 30px;
+      background-color: #161b22;
+      width: 100%;
+      box-shadow: 0px 2px 10px rgba(0,0,0,0.5);
     }
-    button {
-      background: #222;
-      border: 1px solid #00ffcc;
-      color: #00ffcc;
-      padding: 6px 12px;
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #58a6ff;
+    }
+
+    .vm-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .vm-card {
+      background: linear-gradient(145deg, #1f2937, #0f172a);
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
       cursor: pointer;
-      transition: 0.2s;
-      border-radius: 6px;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    button:hover {
-      background: #00ffcc;
-      color: #111;
+    .vm-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.5);
+    }
+
+    #vmFrameContainer {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      margin-top: 20px;
     }
     iframe {
-      width: 100%;
-      height: calc(100vh - 80px);
+      width: 95%;
+      height: 80vh;
       border: none;
+      border-radius: 12px;
+      box-shadow: 0px 4px 15px rgba(0,0,0,0.6);
+      background: white;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin: 15px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #58a6ff;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #79b8ff;
     }
   </style>
 </head>
 <body>
-  <h1>🖥️ Bruh’s VMs</h1>
-  
-  <div class="toolbar">
-    <button onclick="launchVM()">Launch VM</button>
-    <button onclick="resetVM()">Reset VM</button>
-    <button onclick="toggleMode()">Mode: <span id="modeLabel">Solo</span></button>
+  <nav>
+    <div class="logo">Bruh's VMs</div>
+  </nav>
+
+  <div class="vm-grid" id="vmGrid">
+    <div class="vm-card" onclick="launchVM()">Main VM</div>
   </div>
 
-  <iframe id="vmFrame"></iframe>
+  <div id="vmFrameContainer">
+    <div class="btn-row">
+      <button onclick="goBack()">⬅ Back</button>
+      <button onclick="resetVM()">♻ Reset</button>
+      <button onclick="toggleMode()">Mode: <span id="modeLabel">Solo</span></button>
+      <button onclick="goFullscreen()">⛶ Fullscreen</button>
+    </div>
+    <iframe id="vmFrame"></iframe>
+  </div>
 
   <script>
     let sharedMode = false;
     let currentVM = null;
 
     async function launchVM() {
-      const res = await fetch("/api/hyperbeam", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ shared: sharedMode })
-      });
-      const data = await res.json();
-      if (data.embed_url) {
-        currentVM = data.embed_url;
-        document.getElementById("vmFrame").src = currentVM;
-      } else {
-        alert("Error launching VM: " + JSON.stringify(data));
+      try {
+        const res = await fetch("/api/hyperbeam", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ shared: sharedMode })
+        });
+        const data = await res.json();
+        if (data.embed_url) {
+          currentVM = data.embed_url;
+          document.getElementById("vmGrid").style.display = "none";
+          document.getElementById("vmFrameContainer").style.display = "flex";
+          document.getElementById("vmFrame").src = currentVM;
+        } else {
+          alert("Error launching VM: " + JSON.stringify(data));
+        }
+      } catch (err) {
+        alert("Failed to launch VM: " + err);
       }
     }
 
@@ -81,6 +142,20 @@
     function toggleMode() {
       sharedMode = !sharedMode;
       document.getElementById("modeLabel").innerText = sharedMode ? "Shared" : "Solo";
+    }
+
+    function goBack() {
+      document.getElementById("vmGrid").style.display = "grid";
+      document.getElementById("vmFrameContainer").style.display = "none";
+      document.getElementById("vmFrame").src = "";
+    }
+
+    function goFullscreen() {
+      const iframe = document.getElementById("vmFrame");
+      if (iframe.requestFullscreen) iframe.requestFullscreen();
+      else if (iframe.mozRequestFullScreen) iframe.mozRequestFullScreen();
+      else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
+      else if (iframe.msRequestFullscreen) iframe.msRequestFullscreen();
     }
   </script>
 </body>
