@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   try {
-    const body = req.body ? JSON.parse(req.body) : { shared: false };
+    const { shared } = req.body ? await req.json() : { shared: false };
 
     const response = await fetch("https://engine.hyperbeam.com/v0/vm", {
       method: "POST",
@@ -10,7 +10,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         start_url: "https://google.com",
-        collaborative: body.shared
+        collaborative: shared
       })
     });
 
