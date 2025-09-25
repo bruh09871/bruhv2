@@ -22,7 +22,6 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    // Send both embed URL and VM ID back
     res.status(response.status).json({ embed_url: data.embed_url, vm_id: data.id });
   } catch (err) {
     res.status(500).json({ error: err.message });
