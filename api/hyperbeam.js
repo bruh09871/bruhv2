@@ -1,6 +1,5 @@
 export default async function handler(req, res) {
   try {
-    // Parse the body safely
     let shared = false;
     if (req.body) {
       if (typeof req.body === "string") {
@@ -28,3 +27,4 @@ export default async function handler(req, res) {
     res.status(500).json({ error: err.message });
   }
 }
+
