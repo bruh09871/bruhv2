@@ -34,11 +34,9 @@
 
     .vm-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(1, 200px);
       gap: 20px;
-      max-width: 1000px;
       margin: 30px auto;
-      padding: 0 20px;
     }
 
     .vm-card {
@@ -100,9 +98,6 @@
 
   <div class="vm-grid" id="vmGrid">
     <div class="vm-card" onclick="launchVM()">Main VM</div>
-    <div class="vm-card" onclick="launchVMLink('https://copy.sh/v86/')">v86 (Tiny VM)</div>
-    <div class="vm-card" onclick="launchVMLink('https://bellard.org/jslinux/')">JSLinux</div>
-    <div class="vm-card" onclick="launchVMLink('https://webvm.io/')">WebVM</div>
   </div>
 
   <div id="vmFrameContainer">
@@ -135,12 +130,6 @@
       } else {
         alert("Error launching VM: " + JSON.stringify(data));
       }
-    }
-
-    function launchVMLink(url) {
-      document.getElementById('vmGrid').style.display = 'none';
-      document.getElementById('vmFrameContainer').style.display = 'flex';
-      document.getElementById('vmFrame').src = url;
     }
 
     async function destroyVM() {
