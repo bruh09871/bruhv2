@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bruh’s VMs</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: monospace, sans-serif;
+      background: #0d0d0d;
+      color: #00ffcc;
+      text-align: center;
+    }
+    h1 {
+      margin: 20px 0;
+      font-size: 2rem;
+    }
+    .toolbar {
+      background: #111;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      border-bottom: 2px solid #00ffcc;
+    }
+    button {
+      background: #222;
+      border: 1px solid #00ffcc;
+      color: #00ffcc;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      border-radius: 6px;
+    }
+    button:hover {
+      background: #00ffcc;
+      color: #111;
+    }
+    iframe {
+      width: 100%;
+      height: calc(100vh - 80px);
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>🖥️ Bruh’s VMs</h1>
+  
+  <div class="toolbar">
+    <button onclick="launchVM()">Launch VM</button>
+    <button onclick="resetVM()">Reset VM</button>
+    <button onclick="toggleMode()">Mode: <span id="modeLabel">Solo</span></button>
+  </div>
+
+  <iframe id="vmFrame"></iframe>
+
+  <script>
+    let sharedMode = false;
+    let currentVM = null;
+
+    async function launchVM() {
+      const res = await fetch("/api/hyperbeam", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shared: sharedMode })
+      });
+      const data = await res.json();
+      if (data.embed_url) {
+        currentVM = data.embed_url;
+        document.getElementById("vmFrame").src = currentVM;
+      } else {
+        alert("Error launching VM: " + JSON.stringify(data));
+      }
+    }
+
+    function resetVM() {
+      document.getElementById("vmFrame").src = "";
+      launchVM();
+    }
+
+    function toggleMode() {
+      sharedMode = !sharedMode;
+      document.getElementById("modeLabel").innerText = sharedMode ? "Shared" : "Solo";
+    }
+  </script>
+</body>
+</html>
